@@ -1,6 +1,6 @@
-package commons_spec
+package commons_operator //nolint:typecheck
 
-// DatabaseSpec defines the desired state of Database
+// DatabaseSpec defines the desired connection info of Database
 type DatabaseSpec struct {
 	//+kubebuilder:validation:Required
 	Name string `json:"name,omitempty"`
@@ -10,6 +10,7 @@ type DatabaseSpec struct {
 	Credential *DatabaseCredentialSpec `json:"credential,omitempty"`
 }
 
+// DatabaseCredentialSpec include  Username and Password or ExistSecret. ExistSecret include Username and Password ,it is encrypted by base64.
 type DatabaseCredentialSpec struct {
 	ExistSecret string `json:"existingSecret,omitempty"`
 	Username    string `json:"username,omitempty"`

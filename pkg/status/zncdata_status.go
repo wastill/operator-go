@@ -7,6 +7,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
+// ZncdataStatus defines the common state of Zncdata
 type ZncdataStatus struct {
 	// +kubebuilder:validation:Optional
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
@@ -17,10 +18,12 @@ type ZncdataStatus struct {
 	Type       string `json:"type,omitempty"`
 }
 
-func (status ZncdataStatus) IsAvailable() bool {
+// IsAvailable returns true if the status is available.
+func (status *ZncdataStatus) IsAvailable() bool {
 	return apimeta.IsStatusConditionTrue(status.Conditions, ConditionTypeAvailable)
 }
 
+// SetStatusCondition sets the status condition.
 func (status *ZncdataStatus) SetStatusCondition(condition metav1.Condition) (updated bool) {
 	// if the condition already exists, update it
 	existingCondition := apimeta.FindStatusCondition(status.Conditions, condition.Type)
@@ -42,7 +45,7 @@ func (status *ZncdataStatus) SetStatusCondition(condition metav1.Condition) (upd
 }
 
 // InitStatusConditions initializes the status conditions to the provided conditions.
-func (status ZncdataStatus) InitStatusConditions() {
+func (status *ZncdataStatus) InitStatusConditions() {
 	status.Conditions = []metav1.Condition{}
 	status.SetStatusCondition(metav1.Condition{
 		Type:               ConditionTypeProgressing,
@@ -62,6 +65,7 @@ func (status ZncdataStatus) InitStatusConditions() {
 	})
 }
 
+// InitStatus initializes the status.
 func (status *ZncdataStatus) InitStatus(object client.Object) {
 	generation := object.GetGeneration()
 	name := object.GetName()
@@ -71,15 +75,8 @@ func (status *ZncdataStatus) InitStatus(object client.Object) {
 	status.Type = kind
 }
 
-func (status ZncdataStatus) GetConditions() []metav1.Condition {
-	return status.Conditions
-}
-
-func (status *ZncdataStatus) SetConditions(conditions []metav1.Condition) {
-	status.Conditions = conditions
-}
-
-func (status ZncdataStatus) GetGeneration() int64 {
+// GetGeneration returns the status's generation.
+func (status *ZncdataStatus) GetGeneration() int64 {
 	return status.Generation
 }
 
