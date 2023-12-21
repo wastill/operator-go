@@ -1,5 +1,10 @@
 package commons_operator
 
+import (
+	"github.com/zncdata-labs/operator-go/pkg/status"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
+
 const S3BucketFinalizer = "s3bucket.finalizers.stack.zncdata.net"
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -22,4 +27,25 @@ type S3BucketSpec struct {
 type S3BucketCredential struct {
 	// +kubebuilder:validation:Optional
 	ExistSecret string `json:"existSecret,omitempty"`
+}
+
+//+kubebuilder:object:root=true
+//+kubebuilder:subresource:status
+
+// S3Bucket is the Schema for the s3buckets API
+type S3Bucket struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   S3BucketSpec         `json:"spec,omitempty"`
+	Status status.ZncdataStatus `json:"status,omitempty"`
+}
+
+//+kubebuilder:object:root=true
+
+// S3BucketList contains a list of S3Bucket
+type S3BucketList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []S3Bucket `json:"items"`
 }

@@ -1,4 +1,8 @@
 package commons_operator //nolint:typecheck
+import (
+	"github.com/zncdata-labs/operator-go/pkg/status"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
 
 // DatabaseSpec defines the desired connection info of Database
 type DatabaseSpec struct {
@@ -15,4 +19,25 @@ type DatabaseCredentialSpec struct {
 	ExistSecret string `json:"existingSecret,omitempty"`
 	Username    string `json:"username,omitempty"`
 	Password    string `json:"password,omitempty"`
+}
+
+//+kubebuilder:object:root=true
+//+kubebuilder:subresource:status
+
+// Database is the Schema for the databases API
+type Database struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Spec   DatabaseSpec         `json:"spec,omitempty"`
+	Status status.ZncdataStatus `json:"status,omitempty"`
+}
+
+//+kubebuilder:object:root=true
+
+// DatabaseList contains a list of Database
+type DatabaseList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []Database `json:"items"`
 }
